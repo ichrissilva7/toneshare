@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+</head>
+<body>
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="email" placeholder="Email" id="email" required>
+    <input type="password" placeholder="Senha" id="password" required>
+    <button type="submit">Entrar</button>
+  </form>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async e => {
+  e.preventDefault()
+
+  const res = await fetch("/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  })
+
+  const data = await res.json()
+  alert(data.token ? "Login OK!" : data.error)
+})
+</script>
+</body>
+</html>

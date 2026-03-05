@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ToneShare</title>
+
+<style>
+body{
+    background:#111;
+    color:white;
+    font-family:Arial;
+    padding:20px;
+}
+button{
+    background:#00ff88;
+    border:none;
+    padding:8px;
+    cursor:pointer;
+}
+.card{
+    border:1px solid #333;
+    padding:10px;
+    margin-top:10px;
+}
+</style>
+
+</head>
+<body>
+
+<h1>🎸 ToneShare</h1>
+
+<h2>Enviar Timbre / IR</h2>
+
+<input type="text" id="title" placeholder="Nome do Timbre">
+<br><br>
+<input type="text" id="gear" placeholder="Equipamento usado">
+<br><br>
+<input type="file" id="fileInput">
+<br><br>
+<button onclick="salvar()">Salvar Timbre</button>
+
+<hr>
+
+<h2>Timbres Disponíveis</h2>
+
+<div id="lista"></div>
+
+<script>
+let tones = JSON.parse(localStorage.getItem("tones")) || []
+
+function salvar(){
+    const title = document.getElementById("title").value
+    const gear = document.getElementById("gear").value
+    const file = document.getElementById("fileInput").files[0]
+
+    if(!title || !gear || !file){
+        alert("Preencha tudo")
+        return
+    }
+
+    const reader = new FileReader()
+
+    reader.onload = function(e){
+        const tone = {
+            title: title,
+            gear: gear,
+            fileName: file.name,
+            fileData: e.target.result
+        }
+
+        tones.push(tone)
+        localStorage.setItem("tones", JSON.stringify(tones))
+        mostrar()
+    }
+
+    reader.readAsDataURL(file)
+}
+
+function mostrar(){
+    const lista = document.getElementById("lista")
+    lista.innerHTML = ""
+
+    tones.forEach((tone, index) => {
+        lista.innerHTML += `
+        <div class="card">
+            <h3>${tone.title}</h3>
+            <p><strong>Equipamento:</strong> ${tone.gear}</p>
+            <a href="${tone.fileData}" download="${tone.fileName}">
+                <button>⬇ Download</button>
+            </a>
+        </div>
+        `
+    })
+}
+
+mostrar()
+</script>
+
+</body>
+</html>
